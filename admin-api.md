@@ -62,10 +62,7 @@ The Cloud SQL Admin APIs (and all other Google Cloud Platform APIs) have multipl
 
 This is not a good approach for a variety of reasons, but it works if you're in a hurry and just want to check something out. For example, you can past the above add-user code sample into a ```.py``` file, replace all the placeholders with your own information, and the sample will run. If you do this, you'll see this warning displayed on the console:
 
-```
-UserWarning: Your application has authenticated using end user credentials from Google Cloud SDK. We recommend that most server applications use service accounts instead. If your application continues to use end user credentials from Cloud SDK, you might receive a "quota exceeded" or "API not enabled" error. For more information about service accounts, see https://cloud.google.com/docs/authentication/
-
-warnings.warn(_CLOUD_SDK_CREDENTIALS_WARNING)
-```
+> UserWarning: Your application has authenticated using end user credentials from Google Cloud SDK. We recommend that most server applications use service accounts instead. If your application continues to use end user credentials from Cloud SDK, you might receive a "quota exceeded" or "API not enabled" error. For more information about service accounts, see https://cloud.google.com/docs/authentication/
+> warnings.warn(_CLOUD_SDK_CREDENTIALS_WARNING)
 
 That URL for the [Authentication Overview](https://cloud.google.com/docs/authentication/) will lead you to information about the various other options available, such as using an API key (works for some APIs but not all of them), using an environment variable to point to an app registration JSON file, or kicking off an OAuth 2.0 authentication flow.

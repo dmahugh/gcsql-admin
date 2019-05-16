@@ -7,7 +7,7 @@ I've recently started working with Cloud SQL, and this repo contains an overview
 
 * A brief overview of [GCP projects and Cloud SQL instances](projects-instances.md), which may be useful if you're creating your first project.
 * Some information about the [Cloud SQL Admin API](admin-api.md), including examples of how to use the Python client library.
-* An overview of a [Python helper class](helper-class.md) to simplify working with the admin APIs.
+* An [overview of a Python helper class](helper-class.md) to simplify working with the admin APIs.
 * Source code for the helper class is [here](gcsql_admin.py).
 * Samples that show how to use the helper class are [here](samples.py).
 
