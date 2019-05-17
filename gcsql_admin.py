@@ -307,6 +307,124 @@ class User:
         return self.admin.response["items"]
 
 
+def instance_resource(settings: dict) -> dict:
+    """Merges custom settings with Cloud SQL instance resource defaults to
+    create a valid request body for creating a Cloud SQL instance.
+
+    Args:
+        settings: dict of custom settings to override defaults.
+
+    Returns:
+        Cloud SQL resource instance (dict).
+    """
+
+    # Default values are for a 2nd Generation MySQL instance.
+    instance = {
+        "backendType": "SECOND_GEN",
+        "currentDiskSize": "",  # deprecated
+        "serviceAccountEmailAddress": "",
+        "ipAddresses": [],
+        "databaseVersion": "MYSQL_5_7",
+        "instanceType": "CLOUD_SQL_INSTANCE",
+        "maxDiskSize": "",
+        "diskEncryptionConfiguration": {
+            "kind": "sql#diskEncryptionConfiguration",
+            "kmsKeyName": "",
+        },
+        "suspensionReason": [],
+        "masterInstanceName": "",
+        "diskEncryptionStatus": {
+            "kmsKeyVersionName": "",
+            "kind": "sql#diskEncryptionStatus",
+        },
+        "state": "",
+        "etag": "",
+        "gceZone": "",
+        "failoverReplica": {"available": False, "name": ""},
+        "replicaNames": [],
+        "onPremisesConfiguration": {
+            "kind": "sql#onPremisesConfiguration",
+            "hostPort": "",
+        },
+        "connectionName": "",
+        "kind": "sql#instance",
+        "name": "",  # required
+        "ipv6Address": "",  # Only applicable only to First Generation instances.
+        "serverCaCert": {
+            "certSerialNumber": "",
+            "kind": "sql#sslCert",
+            "sha1Fingerprint": "",
+            "commonName": "",
+            "instance": "",
+            "cert": "",
+            "expirationTime": "",
+            "createTime": "",
+            "selfLink": "",
+        },
+        "region": "us-central1",
+        "settings": {
+            "databaseFlags": [],  # see https://cloud.google.com/sql/docs/mysql/flags
+            "kind": "sql#settings",
+            "dataDiskType": "PD_SSD",
+            # see https://cloud.google.com/sql/docs/postgres/high-availability
+            "availabilityType": "",
+            "maintenanceWindow": {
+                "kind": "sql#maintenanceWindow",
+                "updateTrack": "A String",
+                "day": 42,
+                "hour": 42,
+            },
+        },
+        "authorizedGaeApplications": [],
+        "activationPolicy": "ALWAYS",
+        "backupConfiguration": {
+            "kind": "sql#backupConfiguration",
+            "enabled": False,
+            "replicationLogArchivingEnabled": False,
+            "binaryLogEnabled": False,
+            "location": "",
+            "startTime": "",
+        },
+        "ipConfiguration": {
+            "requireSsl": True,
+            "ipv4Enabled": True,
+            "authorizedNetworks": [],
+            "privateNetwork": "",
+        },
+        "tier": "db-n1-standard-1",
+        "userLabels": {},
+        "databaseReplicationEnabled": False,
+        "replicationType": "",  # Only for First Generation instances.
+        "storageAutoResizeLimit": "0",
+        "crashSafeReplicationEnabled": False,  # Only for First Generation instances.
+        "pricingPlan": "PER_USE",
+        "settingsVersion": "",
+        "storageAutoResize": True,
+        "locationPreference": {
+            "kind": "sql#locationPreference",
+            "zone": "us-central1-a",
+            "followGaeApplication": "",
+        },
+        "dataDiskSizeGb": "10GB",
+        # The size of data disk, in GB. The data disk size minimum is 10GB.
+        # Not used for First Generation instances.
+        "project": "",  # Required field
+        "replicaConfiguration": {
+            "kind": "sql#replicaConfiguration",  # This is always sql#replicaConfiguration.
+            "failoverTarget": False,
+            "mysqlReplicaConfiguration": {},
+            "password": "",  # The password for the replication connection.
+            "connectRetryInterval": 42,
+        },
+        "rootPassword": "",  # required field
+        "selfLink": "",
+    }
+
+    if settings:
+        instance.update(settings)
+    return instance
+
+
 def service_client(
     name: str = "sqladmin", version: str = "v1beta4"
 ) -> googleapiclient.discovery.Resource:
