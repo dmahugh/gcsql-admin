@@ -14,7 +14,7 @@ Once you've [created a project](https://cloud.google.com/resource-manager/docs/c
 
 ### Instances
 
-When you use Cloud SQL, you deploy Cloud SQL _instances_ within a project. A [Cloud SQL instance](https://cloud.google.com/sql/docs/mysql/admin-api/v1beta4/instances) analagous to an installed SQL database product on a server: it includes a chosen SQL engine such as MySQL, Postgres, or SQL Server, as well as configuration options such as replication settings, allocated disk size, and so on.
+When you use Cloud SQL, you deploy Cloud SQL _instances_ within a project. A [Cloud SQL instance](https://cloud.google.com/sql/docs/mysql/admin-api/v1beta4/instances) is analagous to an installed SQL database product on a server: it includes a chosen SQL engine such as MySQL, Postgres, or SQL Server, as well as configuration options such as replication settings, allocated disk size, and so on.
 
 ### Databases
 
