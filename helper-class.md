@@ -4,7 +4,7 @@ Using the client libraries is definitely simpler than directly calling the REST 
 
 To minimize context switching and distractions, you may find it useful to put together helper functions or classes that abstract away all of those details, so that you can stay hyper-focused on your business logic. I've created a small proof of concept of such a helper class, covered below.
 
-### The CloudSqlAdmin helper class
+## The CloudSqlAdmin helper class
 
 The [gcsql_admin.py](gcsql_admin.py) file in this repo contains a ```CloudSqlAdmin``` class, which is a container for entity-specific classes that wrap the functionality of the top-level instance methods of the [Cloud SQK Admin API](https://developers.google.com/resources/api-libraries/documentation/sqladmin/v1beta4/python/latest/). Here's a high-level architectural diagram:
 
@@ -50,3 +50,7 @@ A few final things to note about ```CloudSqlAdmin```:
 * Since this is intended as a simple educational sample, it doesn't include error handling and other details you'd want to add for production use.
 * I've included Python 3 type annotations to clarify some things. These are ignored by the Python interpreter, and you can ignore them as well if you're not accustomed to Python's type annotations.
 * For authentication, there's an ```APP_CREDENTIALS``` setting in [config.py](config.py) that stores the name of a local app registration JSON file, and those credentials will be used if the environment variable isn't set. This essentially automates [setting the environment variable](https://cloud.google.com/docs/authentication/getting-started#setting_the_environment_variable), so that you don't need to do that each place where you want to run your code.
+
+### Next steps
+
+I've started implementing instance.insert(), but that has turned out to be more complicated that creating databases or users because the Cloud SQL instance resource has a much larger number of properties. As you can see in [the documentation](https://developers.google.com/resources/api-libraries/documentation/sqladmin/v1beta4/python/latest/sqladmin_v1beta4.instances.html#insert), creating a new instance requires passing an object with over _100_ properties. Simplifying that API will require some work ... more to come.
