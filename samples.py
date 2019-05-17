@@ -39,7 +39,7 @@ def database_get(project: str, instance: str, database: str):
         database: database name
 
     Returns:
-        A dict of metadata about the database.
+        None. Prints the database metadata to the console.
     """
     sql_admin = CloudSqlAdmin()
     metadata = sql_admin.database.get(project, instance, database)
@@ -92,6 +92,23 @@ def database_list(project: str, instance: str):
     sql_admin = CloudSqlAdmin()
     for database in sql_admin.database.list(project, instance):
         print(f"        Database: {database['name']}")
+
+
+def instance_get(project: str, instance: str):
+    """gets metadata for a Cloud SQL instance.
+    Demonstrates use of CloudSqlAdmin.instance.get() method.
+
+    Args:
+        project: name of the Cloud SQL project
+        instance: name of the Cloud SQL instance
+
+    Returns:
+        None. Prints the instance metadata to the console.
+    """
+    sql_admin = CloudSqlAdmin()
+    metadata = sql_admin.instance.get(project, instance)
+    print(f"metadata for project {project}, instance {instance}:")
+    pprint(metadata)
 
 
 def instance_list(project: str):
@@ -218,6 +235,7 @@ if __name__ == "__main__":
     # examples of running the samples:
     # database_insert_delete()
     # database_list(MY_PROJECT, MY_INSTANCE)
+    instance_get(MY_PROJECT, MY_INSTANCE)
     # instance_list(MY_PROJECT)
     # tiers_list(MY_PROJECT)
     # user_insert_delete()

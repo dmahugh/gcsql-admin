@@ -169,6 +169,26 @@ class Instance:
         """
         self.admin = admin
 
+    def get(self, project: str, instance: str) -> dict:
+        """Get metadata for a Cloud SQL instance.
+
+        Args:
+            project: project name
+            instance: instance name
+
+        Returns:
+            An instance object (dict) as documented here:
+            https://developers.google.com/resources/api-libraries/documentation/sqladmin/v1beta4/python/latest/sqladmin_v1beta4.instances.html#get
+            If an error occurred, the returned dict is empty.
+        """
+        request: googleapiclient.http.HttpRequest
+        request = self.admin.service.instances().get(project=project, instance=instance)
+        try:
+            self.admin.response = request.execute()
+        except googleapiclient.errors.HttpError:
+            self.admin.response = {}
+        return self.admin.response
+
     def list(self, project: str) -> List[dict]:
         """Gets a list of the Cloud SQL instances for a project.
 
