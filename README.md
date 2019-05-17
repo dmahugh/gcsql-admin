@@ -5,9 +5,9 @@ The _administration_ of a SQL database in the cloud, however, can be a different
 
 The [Google Cloud Platform console](https://console.cloud.google.com) provides a web interface that spans the full range of GCP services, including Cloud SQL. Just click "go to the SQL dashboard" to get to the SQL dashboard, and there you'll find options for creating and managing instances.
 
-You can do pretty much anything in the web console, but if you'd like to _automate_ administrative tasks (to handle CI and/or testing, for example), then you'll need to use the Cloud SQL Admin API.
+You can do pretty much anything in the web console, but if you'd like to _automate_ administrative tasks (to handle CI and/or testing, for example), then you'll need to use the REST API or client libraries.
 
-I've recently started working with Cloud SQL Admin API, and this repo contains an overview of some things I've learned, as well as a few code samples that demonstrate how to handle common administrative tasks. Here's what's included:
+I've recently started working with the Python client library for this API, and this repo contains an overview of some things I've learned, as well as a few code samples that demonstrate how to handle common administrative tasks. Here's what's included:
 
 * A brief overview of [GCP projects and Cloud SQL instances](projects-instances.md), which may be useful if you're creating your first project.
 * Some information about the [Cloud SQL Admin API](admin-api.md), including examples of how to use the Python client library.
