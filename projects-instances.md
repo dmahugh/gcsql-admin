@@ -4,10 +4,6 @@ For those new to Google cloud services in general, or Cloud SQL in particular, h
 
 ![project structure](images/project-structure.png)
 
-The [Google Cloud Platform console](https://console.cloud.google.com) provides a web interface that spans the full range of GCP services, including Cloud SQL. Just click "go to the SQL dashboard" to get to the SQL dashboard, and there you'll find options for creating and managing instances.
-
-You can do pretty much anything in the web console, but if you'd like to _automate_ administrative tasks (to handle CI and/or testing, for example), then you'll need to use the Cloud SQL Admin API.
-
 ### Projects
 
 At the highest level, a _project_ is a logical grouping of APIs and associated settings for billing and authentication. Every GCP resource you use must be in a specific project, and the resources within a single project can be configured to trust one another and use internal networks for low-latency communication.

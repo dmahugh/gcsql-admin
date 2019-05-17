@@ -2,15 +2,17 @@
 
 Using the client libraries is definitely simpler than directly calling the REST APIs, but as we saw in the [client library examples](admin-api.md), there are still some complexities you need to manage. These range from creating a request body to dealing with pagination, authentication, and other details.
 
-To minimize context switching and distractions, you may find it useful to put together helper functions or classes that abstract away all of those details, so that you can stay hyper-focused on your business logic. In the next section we'll explore one approach to consider: a helper class that turns most Cloud SQL admin API calls into one-liners.
+To minimize context switching and distractions, you may find it useful to put together helper functions or classes that abstract away all of those details, so that you can stay hyper-focused on your business logic. I've created a small proof of concept of such a helper class, covered below.
 
 ### The CloudSqlAdmin helper class
 
-The [gcsql_admin.py](gcsql_admin.py) file in this repo contains a ```CloudSqlAdmin``` class. This class is not a complete wrapper for all of the admin APIs, but it includes methods that simplify the tasks we looked at above as well as a few others. Here's a high-level architectural diagram:
+The [gcsql_admin.py](gcsql_admin.py) file in this repo contains a ```CloudSqlAdmin``` class, which is a container for entity-specific classes that wrap the functionality of the top-level instance methods of the [Cloud SQK Admin API](https://developers.google.com/resources/api-libraries/documentation/sqladmin/v1beta4/python/latest/). Here's a high-level architectural diagram:
 
 ![CloudSqlAdmin architecture](images/CloudSqlAdmin.png)
 
-Here's how this wrapper class simplifies the previous example of creating a new user in a Cloud SQL instance:
+I've only implemented three of the entity-specific classes so far (Instance, Database, and User), including methods that simplify the [client library examples](admin-api.md) we looked at earlier.
+
+The basic concept is that you instantiate ```CloudSqlAdmin``` and then call an entity-specific method. For example, here's how you'd create a new user in a Cloud SQL instance:
 
 ```python
 sql_admin = CloudSqlAdmin()
@@ -20,7 +22,9 @@ else:
     print(f"ERROR inserting user: {sql_admin.response}")
 ```
 
-There's much less code than in the client library example, because the wrapper class has handled creating the request body and other details. If you want to get all of the instances in a project, here's how ```CloudSqlAdmin``` hides the messy details of pagination:
+There's less code than in the client library example, because the wrapper class has handled creating the request body and other details.
+
+Here's another example, showing how to get all of the instances in a project without any need to deal with the details of pagination:
 
 ```python
 sql_admin = CloudSqlAdmin()
