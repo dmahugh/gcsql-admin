@@ -169,6 +169,29 @@ class Instance:
         """
         self.admin = admin
 
+    def delete(self, project: str, instance: str) -> bool:
+        """Deletes a Cloud SQL instance.
+
+        Args:
+            project: project name
+            instance: instance name
+
+        Returns:
+            True if instance is successfully deleted, False if an error occurs.
+        """
+        request: googleapiclient.http.HttpRequest
+        request = self.admin.service.instances().delete(
+            project=project, instance=instance
+        )
+        try:
+            self.admin.response = request.execute()
+        except googleapiclient.errors.HttpError:
+            self.admin.response = {"error": "googleapiclient.errors.HttpError"}
+            return False
+        if self.admin.response.get("error", ""):
+            return False
+        return True
+
     def get(self, project: str, instance: str) -> dict:
         """Get metadata for a Cloud SQL instance.
 
@@ -188,6 +211,63 @@ class Instance:
         except googleapiclient.errors.HttpError:
             self.admin.response = {}
         return self.admin.response
+
+    def insert(
+        self,
+        project: str = "",
+        instance_name: str = "",
+        root_password: str = "",
+        database_type: str = "MySQL",
+    ) -> bool:
+        """Creates a new Cloud SQL instance
+
+        Args:
+            project: project name
+            instance_name: instance name
+            root_password: root password
+            database_type: either "MySQL" (default) or "PostgreSQL"
+
+        Returns:
+            True if success, false if error occurred.
+
+        Raises:
+            ValueError if invalid database_type specified.
+
+        This method only provides for simple default configuration of each
+        database type. For full control of all the properties of a Cloud SQL
+        instance, use the Python client library's instances().insert method
+        instead.
+
+        Note that the state of a new instance will be PENDING_CREATE while it
+        is being provisioned. In our experience, a new MySQL instance will be
+        PENDING_CREATE for 4-5 minutes before becoming RUNNABLE, and for a
+        PostgreSQL instance it takes around 3 minutes. YMMV.
+        """
+        request_body = {
+            "project": project,
+            "name": instance_name,
+            "rootPassword": root_password,
+        }
+        if database_type == "MySQL":
+            request_body["databaseVersion"] = "MYSQL_5_7"
+            request_body["settings"] = {"tier": "db-n1-standard-1"}
+        elif database_type == "PostgreSQL":
+            request_body["databaseVersion"] = "POSTGRES_9_6"
+            request_body["settings"] = {
+                "tier": "db-custom-1-3840",
+                "availabilityType": "ZONAL",
+            }
+        else:
+            raise ValueError(f"invalid database_type={database_type}")
+
+        request: googleapiclient.http.HttpRequest
+        request = self.admin.service.instances().insert(
+            project=project, body=request_body
+        )
+        self.admin.response = request.execute()
+        if self.admin.response.get("error", ""):
+            return False
+        return True
 
     def list(self, project: str) -> List[dict]:
         """Gets a list of the Cloud SQL instances for a project.
@@ -305,124 +385,6 @@ class User:
         request = self.admin.service.users().list(project=project, instance=instance)
         self.admin.response = request.execute()
         return self.admin.response["items"]
-
-
-def instance_resource(settings: dict) -> dict:
-    """Merges custom settings with Cloud SQL instance resource defaults to
-    create a valid request body for creating a Cloud SQL instance.
-
-    Args:
-        settings: dict of custom settings to override defaults.
-
-    Returns:
-        Cloud SQL resource instance (dict).
-    """
-
-    # Default values are for a 2nd Generation MySQL instance.
-    instance = {
-        "backendType": "SECOND_GEN",
-        "currentDiskSize": "",  # deprecated
-        "serviceAccountEmailAddress": "",
-        "ipAddresses": [],
-        "databaseVersion": "MYSQL_5_7",
-        "instanceType": "CLOUD_SQL_INSTANCE",
-        "maxDiskSize": "",
-        "diskEncryptionConfiguration": {
-            "kind": "sql#diskEncryptionConfiguration",
-            "kmsKeyName": "",
-        },
-        "suspensionReason": [],
-        "masterInstanceName": "",
-        "diskEncryptionStatus": {
-            "kmsKeyVersionName": "",
-            "kind": "sql#diskEncryptionStatus",
-        },
-        "state": "",
-        "etag": "",
-        "gceZone": "",
-        "failoverReplica": {"available": False, "name": ""},
-        "replicaNames": [],
-        "onPremisesConfiguration": {
-            "kind": "sql#onPremisesConfiguration",
-            "hostPort": "",
-        },
-        "connectionName": "",
-        "kind": "sql#instance",
-        "name": "",  # required
-        "ipv6Address": "",  # Only applicable only to First Generation instances.
-        "serverCaCert": {
-            "certSerialNumber": "",
-            "kind": "sql#sslCert",
-            "sha1Fingerprint": "",
-            "commonName": "",
-            "instance": "",
-            "cert": "",
-            "expirationTime": "",
-            "createTime": "",
-            "selfLink": "",
-        },
-        "region": "us-central1",
-        "settings": {
-            "databaseFlags": [],  # see https://cloud.google.com/sql/docs/mysql/flags
-            "kind": "sql#settings",
-            "dataDiskType": "PD_SSD",
-            # see https://cloud.google.com/sql/docs/postgres/high-availability
-            "availabilityType": "",
-            "maintenanceWindow": {
-                "kind": "sql#maintenanceWindow",
-                "updateTrack": "A String",
-                "day": 42,
-                "hour": 42,
-            },
-        },
-        "authorizedGaeApplications": [],
-        "activationPolicy": "ALWAYS",
-        "backupConfiguration": {
-            "kind": "sql#backupConfiguration",
-            "enabled": False,
-            "replicationLogArchivingEnabled": False,
-            "binaryLogEnabled": False,
-            "location": "",
-            "startTime": "",
-        },
-        "ipConfiguration": {
-            "requireSsl": True,
-            "ipv4Enabled": True,
-            "authorizedNetworks": [],
-            "privateNetwork": "",
-        },
-        "tier": "db-n1-standard-1",
-        "userLabels": {},
-        "databaseReplicationEnabled": False,
-        "replicationType": "",  # Only for First Generation instances.
-        "storageAutoResizeLimit": "0",
-        "crashSafeReplicationEnabled": False,  # Only for First Generation instances.
-        "pricingPlan": "PER_USE",
-        "settingsVersion": "",
-        "storageAutoResize": True,
-        "locationPreference": {
-            "kind": "sql#locationPreference",
-            "zone": "us-central1-a",
-            "followGaeApplication": "",
-        },
-        "dataDiskSizeGb": "10GB",
-        # The size of data disk, in GB. The data disk size minimum is 10GB.
-        # Not used for First Generation instances.
-        "project": "",  # Required field
-        "replicaConfiguration": {
-            "kind": "sql#replicaConfiguration",  # This is always sql#replicaConfiguration.
-            "failoverTarget": False,
-            "mysqlReplicaConfiguration": {},
-            "password": "",  # The password for the replication connection.
-            "connectRetryInterval": 42,
-        },
-        "rootPassword": "",  # required field
-        "selfLink": "",
-    }
-
-    if settings:
-        instance.update(settings)
-    return instance
 
 
 def service_client(

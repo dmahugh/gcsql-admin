@@ -1,6 +1,8 @@
 """examples of how to use the CloudSqlAdmin wrapper class
 """
 from pprint import pprint
+from time import sleep
+from timeit import default_timer
 import uuid  # used to generate a random password for user_insert
 
 from gcsql_admin import CloudSqlAdmin
@@ -94,6 +96,25 @@ def database_list(project: str, instance: str):
         print(f"        Database: {database['name']}")
 
 
+def instance_delete(project: str, instance: str):
+    """Deletes a Cloud SQL instance.
+    Demonstrates use of CloudSqlAdmin.instance.delete() method.
+
+    Args:
+        project: name of the Cloud SQL project
+        instance: name of the Cloud SQL instance
+
+    Returns:
+        None. Instance is deleted, and a summary is printed to the console.
+    """
+    sql_admin = CloudSqlAdmin()
+    if sql_admin.instance.delete(project, instance):
+        print(f"instance {instance} deleted, status = {sql_admin.response['status']}")
+    else:
+        print(f"ERROR deleting instance {instance}!")
+        print(sql_admin.response["error"])
+
+
 def instance_get(project: str, instance: str):
     """gets metadata for a Cloud SQL instance.
     Demonstrates use of CloudSqlAdmin.instance.get() method.
@@ -109,6 +130,35 @@ def instance_get(project: str, instance: str):
     metadata = sql_admin.instance.get(project, instance)
     print(f"metadata for project {project}, instance {instance}:")
     pprint(metadata)
+
+
+def instance_insert(
+    project: str, instance_name: str, root_password: str, database_type: str = "MySQL"
+):
+    """Creates a new Cloud SQL instance.
+    Demonstrates use of CloudSqlAdmin.instance.insert() method.
+
+    Args:
+        project: name of the Cloud SQL project
+        instance_name: name of the Cloud SQL instance to be created
+        root_password: password for root user
+        database_type: the type of database; must be "MySQL" or "PostgreSQL"
+
+    Returns:
+        None. instance is created, and a summary is printed to the console.
+    """
+    sql_admin = CloudSqlAdmin()
+    if sql_admin.instance.insert(
+        project=project,
+        instance_name=instance_name,
+        root_password=root_password,
+        database_type=database_type,
+    ):
+        print(
+            f"Cloud SQL instance {instance_name} created, status = {sql_admin.response['status']}"
+        )
+    else:
+        print(f"ERROR creating instance {instance_name}: {sql_admin.response}")
 
 
 def instance_list(project: str):
@@ -130,6 +180,26 @@ def instance_list(project: str):
         print(f"        Tier: {instance['settings']['tier']}")
         print(f"     Pricing: {instance['settings']['pricingPlan']}")
         print(f"       State: {instance['state']}")
+
+
+def instance_state_polling(project: str, instance: str):
+    """Prints state of an instance to the console every 5 seconds.
+    """
+    start_time = default_timer()
+    sql_admin = CloudSqlAdmin()
+    while True:
+        metadata = sql_admin.instance.get(project, instance)
+        if "state" in metadata:
+            state = metadata["state"]
+        else:
+            state = "not found"
+        print(
+            (
+                f"{default_timer() - start_time:9.4} seconds elapsed - "
+                f"project: {project}, instance: {instance}, state: {state}"
+            )
+        )
+        sleep(5)
 
 
 def tiers_list(project: str):
@@ -232,10 +302,10 @@ def user_list(project: str, instance: str):
 
 
 if __name__ == "__main__":
-    # examples of running the samples:
+    # typical examples of running the samples:
     # database_insert_delete()
     # database_list(MY_PROJECT, MY_INSTANCE)
-    instance_get(MY_PROJECT, MY_INSTANCE)
+    # instance_get(MY_PROJECT, MY_INSTANCE)
     # instance_list(MY_PROJECT)
     # tiers_list(MY_PROJECT)
     # user_insert_delete()
