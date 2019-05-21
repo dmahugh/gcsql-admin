@@ -11,9 +11,9 @@ from gcsql_admin import CloudSqlAdmin
 from config import MY_PROJECT, MY_INSTANCE
 
 
-def database_delete(project: str, instance: str, database: str):
+def databases_delete(project: str, instance: str, database: str):
     """Deletes a database from a Cloud SQL instance.
-    Demonstrates use of CloudSqlAdmin.database.delete() method.
+    Demonstrates use of CloudSqlAdmin.databases.delete() method.
 
     Args:
         project: name of the Cloud SQL project
@@ -24,16 +24,16 @@ def database_delete(project: str, instance: str, database: str):
         None. Database is deleted, and a summary is printed to the console.
     """
     sql_admin = CloudSqlAdmin()
-    if sql_admin.database.delete(project, instance, database):
+    if sql_admin.databases.delete(project, instance, database):
         print(f"database {database} deleted, status = {sql_admin.response['status']}")
     else:
         print(f"ERROR deleting database {database}!")
         print(sql_admin.response["error"])
 
 
-def database_get(project: str, instance: str, database: str):
+def databases_get(project: str, instance: str, database: str):
     """gets metadata for database in a Cloud SQL instance.
-    Demonstrates use of CloudSqlAdmin.database.get() method.
+    Demonstrates use of CloudSqlAdmin.databases.get() method.
 
     Args:
         project: name of the Cloud SQL project
@@ -44,14 +44,14 @@ def database_get(project: str, instance: str, database: str):
         None. Prints the database metadata to the console.
     """
     sql_admin = CloudSqlAdmin()
-    metadata = sql_admin.database.get(project, instance, database)
+    metadata = sql_admin.databases.get(project, instance, database)
     print(f"metadata for project {project}, instance {instance}, database {database}:")
     pprint(metadata)
 
 
-def database_insert(project: str, instance: str, database: str):
+def databases_insert(project: str, instance: str, database: str):
     """Inserts a new database in a Cloud SQL instance.
-    Demonstrates use of CloudSqlAdmin.database.insert() method.
+    Demonstrates use of CloudSqlAdmin.databases.insert() method.
 
     Args:
         project: name of the Cloud SQL project
@@ -63,24 +63,24 @@ def database_insert(project: str, instance: str, database: str):
     """
     sql_admin = CloudSqlAdmin()
 
-    if sql_admin.database.insert(project, instance, database):
+    if sql_admin.databases.insert(project, instance, database):
         print(f"Database created: {database}, status = {sql_admin.response['status']}")
     else:
         print(f"ERROR creating database: {sql_admin.response}")
 
 
-def database_insert_delete():
+def databases_insert_delete():
     """Inserts a new database, then deletes the database.
     """
-    database_insert(MY_PROJECT, MY_INSTANCE, "testdb")
-    database_get(MY_PROJECT, MY_INSTANCE, "testdb")
-    database_delete(MY_PROJECT, MY_INSTANCE, "testdb")
-    database_get(MY_PROJECT, MY_INSTANCE, "testdb")
+    databases_insert(MY_PROJECT, MY_INSTANCE, "testdb")
+    databases_get(MY_PROJECT, MY_INSTANCE, "testdb")
+    databases_delete(MY_PROJECT, MY_INSTANCE, "testdb")
+    databases_get(MY_PROJECT, MY_INSTANCE, "testdb")
 
 
-def database_list(project: str, instance: str):
+def databases_list(project: str, instance: str):
     """Prints a summary of the databases in a Cloud SQL instance.
-    Demonstrates use of CloudSqlAdmin.database.list() method.
+    Demonstrates use of CloudSqlAdmin.databases.list() method.
 
     Args:
         project: name of the Cloud SQL project
@@ -92,13 +92,13 @@ def database_list(project: str, instance: str):
     print(f"PROJECT/INSTANCE: {project} / {instance}")
 
     sql_admin = CloudSqlAdmin()
-    for database in sql_admin.database.list(project, instance):
+    for database in sql_admin.databases.list(project, instance):
         print(f"        Database: {database['name']}")
 
 
-def instance_delete(project: str, instance: str):
+def instances_delete(project: str, instance: str):
     """Deletes a Cloud SQL instance.
-    Demonstrates use of CloudSqlAdmin.instance.delete() method.
+    Demonstrates use of CloudSqlAdmin.instances.delete() method.
 
     Args:
         project: name of the Cloud SQL project
@@ -108,16 +108,16 @@ def instance_delete(project: str, instance: str):
         None. Instance is deleted, and a summary is printed to the console.
     """
     sql_admin = CloudSqlAdmin()
-    if sql_admin.instance.delete(project, instance):
+    if sql_admin.instances.delete(project, instance):
         print(f"instance {instance} deleted, status = {sql_admin.response['status']}")
     else:
         print(f"ERROR deleting instance {instance}!")
         print(sql_admin.response["error"])
 
 
-def instance_get(project: str, instance: str):
+def instances_get(project: str, instance: str):
     """gets metadata for a Cloud SQL instance.
-    Demonstrates use of CloudSqlAdmin.instance.get() method.
+    Demonstrates use of CloudSqlAdmin.instances.get() method.
 
     Args:
         project: name of the Cloud SQL project
@@ -127,16 +127,16 @@ def instance_get(project: str, instance: str):
         None. Prints the instance metadata to the console.
     """
     sql_admin = CloudSqlAdmin()
-    metadata = sql_admin.instance.get(project, instance)
+    metadata = sql_admin.instances.get(project, instance)
     print(f"metadata for project {project}, instance {instance}:")
     pprint(metadata)
 
 
-def instance_insert(
+def instances_insert(
     project: str, instance_name: str, root_password: str, database_type: str = "MySQL"
 ):
     """Creates a new Cloud SQL instance.
-    Demonstrates use of CloudSqlAdmin.instance.insert() method.
+    Demonstrates use of CloudSqlAdmin.instances.insert() method.
 
     Args:
         project: name of the Cloud SQL project
@@ -148,7 +148,7 @@ def instance_insert(
         None. instance is created, and a summary is printed to the console.
     """
     sql_admin = CloudSqlAdmin()
-    if sql_admin.instance.insert(
+    if sql_admin.instances.insert(
         project=project,
         instance_name=instance_name,
         root_password=root_password,
@@ -161,9 +161,9 @@ def instance_insert(
         print(f"ERROR creating instance {instance_name}: {sql_admin.response}")
 
 
-def instance_list(project: str):
+def instances_list(project: str):
     """Prints a summary of the list of Cloud SQL instances in a project.
-    Demonstrates use of CloudSqlAdmin.instance.list() method.
+    Demonstrates use of CloudSqlAdmin.instances.list() method.
 
     Args:
         project: name of the Cloud SQL project
@@ -174,7 +174,7 @@ def instance_list(project: str):
     print(f"PROJECT NAME: {project}")
 
     sql_admin = CloudSqlAdmin()
-    for instance in sql_admin.instance.list(project):
+    for instance in sql_admin.instances.list(project):
         print(f"Instance -->: {instance['name']}")
         print(f"  DB Version: {instance['databaseVersion']}")
         print(f"        Tier: {instance['settings']['tier']}")
@@ -188,7 +188,7 @@ def instance_state_polling(project: str, instance: str):
     start_time = default_timer()
     sql_admin = CloudSqlAdmin()
     while True:
-        metadata = sql_admin.instance.get(project, instance)
+        metadata = sql_admin.instances.get(project, instance)
         if "state" in metadata:
             state = metadata["state"]
         else:
@@ -218,9 +218,9 @@ def tiers_list(project: str):
     print(response)
 
 
-def user_delete(project: str, instance: str, host: str, username: str):
+def users_delete(project: str, instance: str, host: str, username: str):
     """Deletes a user from a Cloud SQL instance.
-    Demonstrates use of CloudSqlAdmin.user.delete() method.
+    Demonstrates use of CloudSqlAdmin.users.delete() method.
 
     Args:
         project: name of the Cloud SQL project
@@ -233,16 +233,16 @@ def user_delete(project: str, instance: str, host: str, username: str):
     """
     sql_admin = CloudSqlAdmin()
 
-    if sql_admin.user.delete(project, instance, host, username):
+    if sql_admin.users.delete(project, instance, host, username):
         print(f"user {username} deleted, status = {sql_admin.response['status']}")
     else:
         print(f"ERROR deleting user {username}!")
         print(sql_admin.response["error"])
 
 
-def user_insert(project: str, instance: str, host: str, username: str, password: str):
+def users_insert(project: str, instance: str, host: str, username: str, password: str):
     """Inserts a new user in a Cloud SQL instance.
-    Demonstrates use of CloudSqlAdmin.user.insert() method.
+    Demonstrates use of CloudSqlAdmin.users.insert() method.
 
     Args:
         project: name of the Cloud SQL project
@@ -256,17 +256,17 @@ def user_insert(project: str, instance: str, host: str, username: str, password:
     """
     sql_admin = CloudSqlAdmin()
 
-    if sql_admin.user.insert(project, instance, host, username, password):
+    if sql_admin.users.insert(project, instance, host, username, password):
         print(f"User created: {username}")
     else:
         print(f"ERROR inserting user: {sql_admin.response}")
 
 
-def user_insert_delete():
+def users_insert_delete():
     """Inserts a new user, then deletes the user.
     """
 
-    user_insert(
+    users_insert(
         project=MY_PROJECT,
         instance=MY_INSTANCE,
         host="localhost",
@@ -274,18 +274,18 @@ def user_insert_delete():
         password=str(uuid.uuid4()),
     )
 
-    user_list(MY_PROJECT, MY_INSTANCE)  # this list will include testuser
+    users_list(MY_PROJECT, MY_INSTANCE)  # this list will include testuser
 
-    user_delete(
+    users_delete(
         project=MY_PROJECT, instance=MY_INSTANCE, host="localhost", username="testuser"
     )
 
-    user_list(MY_PROJECT, MY_INSTANCE)  # this list will not include testuser
+    users_list(MY_PROJECT, MY_INSTANCE)  # this list will not include testuser
 
 
-def user_list(project: str, instance: str):
+def users_list(project: str, instance: str):
     """Prints a summary of the users in a Cloud SQL instance.
-    Demonstrates use of CloudSqlAdmin.user.list() method.
+    Demonstrates use of CloudSqlAdmin.users.list() method.
 
     Args:
         project: name of the Cloud SQL project
@@ -297,16 +297,16 @@ def user_list(project: str, instance: str):
     print(f"PROJECT/INSTANCE: {project} / {instance}")
 
     sql_admin = CloudSqlAdmin()
-    for user in sql_admin.user.list(project, instance):
+    for user in sql_admin.users.list(project, instance):
         print(f"       User Name: {user['name']}")
 
 
 if __name__ == "__main__":
     # typical examples of running the samples:
-    # database_insert_delete()
-    # database_list(MY_PROJECT, MY_INSTANCE)
-    # instance_get(MY_PROJECT, MY_INSTANCE)
-    # instance_list(MY_PROJECT)
-    # tiers_list(MY_PROJECT)
-    # user_insert_delete()
+    # databases_insert_delete()
+    databases_list(MY_PROJECT, MY_INSTANCE)
+    # instances_get(MY_PROJECT, MY_INSTANCE)
+    instances_list(MY_PROJECT)
+    tiers_list(MY_PROJECT)
+    # users_insert_delete()
     pass

@@ -17,16 +17,16 @@ class CloudSqlAdmin:
         """
 
         # Add the contained objects for entity-specific functionality.
-        self.database = Database(self)
-        self.instance = Instance(self)
-        self.user = User(self)
+        self.databases = Databases(self)
+        self.instances = Instances(self)
+        self.users = Users(self)
 
         self.service: googleapiclient.discovery.Resource = service_client()
 
         self.response: dict = {}  # response to the last API call
 
 
-class Database:
+class Databases:
     """Handles database API calls as a contained member of CloudSqlAdmin.
 
     This class contains methods to wrap API calls documented here:
@@ -152,7 +152,7 @@ class Database:
         return self.admin.response["items"]
 
 
-class Instance:
+class Instances:
     """Handles instance API calls as a contained member of CloudSqlAdmin.
 
     This class contains methods to wrap API calls documented here:
@@ -294,7 +294,7 @@ class Instance:
         return sql_instances
 
 
-class User:
+class Users:
     """Handles user API calls as a contained member of CloudSqlAdmin.
 
     This class contains methods to wrap API calls documented here:
@@ -405,7 +405,7 @@ def service_client(
     # and set the GOOGLE_APPLICATION_CREDENTIALS environment variable to
     # point to the app registration JSON for the service account.
 
-    # If the environment variable is not set but a filename has been specified,
+    # If the environment variable is not set but a filename has been specified
     # in the APP_CREDENTIALS setting in config.py, those credentials are used.
     # Note that APP_CREDENTIALS should contain the name of an app registration
     # JSON file in the current working directory.

@@ -10,13 +10,13 @@ The [gcsql_admin.py](gcsql_admin.py) file in this repo contains a ```CloudSqlAdm
 
 ![CloudSqlAdmin architecture](images/CloudSqlAdmin.png)
 
-I've only implemented three of the entity-specific classes so far (Instance, Database, and User), including methods that simplify the [client library examples](admin-api.md) we looked at earlier.
+I've only implemented three of the entity-specific classes so far (Instances, Databases, and Users), including methods that simplify the [client library examples](admin-api.md) we looked at earlier.
 
 The basic concept is that you instantiate ```CloudSqlAdmin``` and then call an entity-specific method. For example, here's how you'd create a new user in a Cloud SQL instance:
 
 ```python
 sql_admin = CloudSqlAdmin()
-if sql_admin.user.insert(project, instance, host, username, password):
+if sql_admin.users.insert(project, instance, host, username, password):
     print(f"User created: {username}")
 else:
     print(f"ERROR inserting user: {sql_admin.response}")
@@ -28,7 +28,7 @@ Here's another example, showing how to get all of the instances in a project wit
 
 ```python
 sql_admin = CloudSqlAdmin()
-for instance in sql_admin.instance.list(project):
+for instance in sql_admin.instances.list(project):
     print(f"Instance: {instance['name']}")
 ```
 
