@@ -15,7 +15,7 @@ I've recently started working with the Python client library for this API, and t
 * Source code for the helper class is [here](gcsql_admin.py).
 * Samples that show how to use the helper class are [here](samples.py).
 
-I'm using Python 3.7, but the same general concepts should apply to any supported language.
+I'm using Python 3.7, but the same general concepts apply to any supported language.
 
 ## Running the samples
 
